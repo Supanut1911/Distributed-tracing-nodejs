@@ -21,6 +21,8 @@
     "@opentelemetry/plugin-express": "^0.15.0",
     "@opentelemetry/plugin-http": "^0.18.2",
     "@opentelemetry/plugin-https": "^0.18.2",
+    "@opentelemetry/resources": "^0.23.0",
+    "@opentelemetry/semantic-conventions": "^0.23.0",
     "@opentelemetry/tracing": "^0.22.0",
     "axios": "^0.21.1",
     "cors": "^2.8.5",

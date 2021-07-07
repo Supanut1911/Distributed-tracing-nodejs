@@ -24,8 +24,7 @@
 // })
 
 // app.post('/', (req, res) => {
-//   console.log(req.body);
-//   let {id, name} = req.body
+//   console.log(req.body);//   let {id, name} = req.body
 
 //   try {
 //     let item = {
@@ -57,7 +56,6 @@
 // app.listen(parseInt(PORT, 10), () => { console.log(`Listening for requests on http://localhost:${PORT}`); });
 
 
-
 const { NodeTracerProvider } = require("@opentelemetry/node");
 const { SimpleSpanProcessor, ConsoleSpanExporter, BatchSpanProcessor } = require("@opentelemetry/tracing");
 const { ZipkinExporter } = require("@opentelemetry/exporter-zipkin");
@@ -66,7 +64,15 @@ const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
-const provider = new NodeTracerProvider()
+const { Resource } = require('@opentelemetry/resources');
+const { ResourceAttributes } = require('@opentelemetry/semantic-conventions');
+
+const provider = new NodeTracerProvider({
+  servicName: 'userService',
+  resource: new Resource({
+    [ResourceAttributes.SERVICE_NAME]: 'userXservice'
+  })
+})
 const consoleExport = new ConsoleSpanExporter()
 const spanProcessor = new SimpleSpanProcessor(consoleExport)
 provider.addSpanProcessor(spanProcessor)
@@ -85,7 +91,10 @@ registerInstrumentations({
 });
 
 const option = {
-  servicName: 'userService',
+  service: {
+    name: 'userService'
+  },
+  serviceName: 'userService',
   tags: [], // optional
   // You can use the default UDPSender
   host: 'localhost', // optional
@@ -100,9 +109,9 @@ const config = {
   servicName: 'userService'
 }
 
-const exporter = new JaegerExporter(option);
+const exporter = new JaegerExporter(config, option);
 
-provider.addSpanProcessor(new BatchSpanProcessor( exporter))
+provider.addSpanProcessor(new SimpleSpanProcessor( exporter))
 
 
 const express = require('express')
@@ -119,8 +128,7 @@ const users = [
   },
   {
     id: "002",
-    name: "objB"
-  },
+    name: "objB"  },
 ]
 
 app.get('/users', (req, res) => {
@@ -147,7 +155,6 @@ app.get('/users_and_cars', async (req, res, next) => {
 app.listen(port, () => {
   console.log(`user server is running on ${port}`);
 })
-
 
 
 

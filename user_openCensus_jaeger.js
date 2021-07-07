@@ -83,7 +83,7 @@ const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
 // registerInstrumentations({
 //   instrumentations: [getNodeAutoInstrumentations()],
 // });
-
+const { logger } = require('@opencensus/core');
 const tracing = require('@opencensus/nodejs');
 const { JaegerTraceExporter } = require('@opencensus/exporter-jaeger');
 
@@ -93,6 +93,9 @@ const jaegerOptions = {
   port: 6832,
   tags: [], // optional
   maxPacketSize: 65000, // optional
+  tags: [{key: 'opencensus-exporter-jeager', value: '0.0.9'}],
+  bufferTimeout: 10, // time in milliseconds
+  logger: logger.logger('debug')
 
 }
 
